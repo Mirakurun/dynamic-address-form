@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Box,
   Container,
@@ -11,27 +10,6 @@ import {
   TextField,
 } from '@material-ui/core';
 import AddressField from '../data/addressfield.json';
-
-const CountryOptions = React.forwardRef((props, ref) => {
-  const options = props.addressfield.options.map((option) => (
-    <MenuItem key={option.iso} ref={ref} value={option.iso}>
-      {option.label}
-    </MenuItem>
-  ));
-
-  return options;
-});
-
-CountryOptions.propTypes = {
-  addressfield: PropTypes.shape({
-    label: PropTypes.string,
-    options: PropTypes.arrayOf(PropTypes.object),
-  }),
-};
-
-CountryOptions.defaultProps = {
-  addressfield: {},
-};
 
 function AddressLine1() {
   return (
@@ -52,6 +30,10 @@ function AddressLine2() {
 const AddressForm = () => {
   const [country, setCountry] = useState('');
 
+  const handleCountryChange = (event) => {
+    setCountry(event.target.value);
+  };
+
   return (
     <Container maxWidth="sm">
       <Box
@@ -69,9 +51,13 @@ const AddressForm = () => {
                   id="country-select"
                   labelId="country-label"
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  onChange={handleCountryChange}
                 >
-                  <CountryOptions addressfield={AddressField} />
+                  {AddressField.options.map((option) => (
+                    <MenuItem key={option.iso} value={option}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
