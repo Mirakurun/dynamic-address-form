@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Container,
@@ -11,24 +12,35 @@ import {
 } from '@material-ui/core';
 import AddressField from '../data/addressfield.json';
 
-function AddressLine1() {
+function Address(number) {
   return (
     <FormControl fullWidth>
-      <TextField id="address1" label="Address Line 1" />
+      <TextField id={`address${number}`} label={`Address Line ${number}`} />
     </FormControl>
   );
 }
 
-function AddressLine2() {
-  return (
-    <FormControl fullWidth>
-      <TextField id="address2" label="Address Line 2" />
-    </FormControl>
-  );
+function LocalityList({ localities }) {
+  const breakpoint = 12 / localities.length;
+  const listItems = localities.map((locality, index) => (
+    <Grid item key={index} xs={breakpoint}>
+      locality
+    </Grid>
+  ));
+
+  return listItems;
 }
+
+LocalityList.propTypes = {
+  localities: PropTypes.arrayOf(PropTypes.object),
+};
+
+LocalityList.defaultProps = {
+  localities: [],
+};
 
 const AddressForm = () => {
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState(AddressField.options[0]);
 
   const handleCountryChange = (event) => {
     setCountry(event.target.value);
@@ -43,7 +55,7 @@ const AddressForm = () => {
         style={{ backgroundColor: '#cfe8fc', height: '100vh' }}
       >
         <form action="" style={{ width: '100%' }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={4}>
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="country-label">Country</InputLabel>
@@ -62,11 +74,12 @@ const AddressForm = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <AddressLine1 />
+              {Address(1)}
             </Grid>
             <Grid item xs={12}>
-              <AddressLine2 />
+              {Address(2)}
             </Grid>
+            <LocalityList localities={country.fields[2].locality} />
           </Grid>
         </form>
       </Box>
